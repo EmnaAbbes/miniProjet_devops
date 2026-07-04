@@ -14,7 +14,7 @@ public class Auth {
         System.out.print("Enter password: ");
         String password = sc.nextLine();
 
-        if (username.equals("admin") && password.equals("1234")) {
+        if (username.equals("admin") && password.equals("123456")) {
             System.out.println("Login successful");
         } else {
             System.out.println("Invalid credentials");
