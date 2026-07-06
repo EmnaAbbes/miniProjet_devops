@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.6-openjdk-11'
-            args '-v /root/.m2:/root/.m2' // Pour garder le cache et aller plus vite la prochaine fois
-        }
-    }
+    agent any
 
     environment {
         DOCKER_HUB_CREDS = 'docker-hub-credentials'
@@ -24,15 +19,15 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                echo 'Compilation de l\'application avec Maven dans le conteneur...'
-                sh 'mvn clean package -DskipTests' 
+                echo 'Compilation de l\'application avec Maven via un conteneur Docker éphémère...'
+                // Exécuter Maven dans un conteneur à la volée
+                sh 'docker run --rm -v "$WORKSPACE":/app -w /app maven:3.8.6-openjdk-11 mvn clean package -DskipTests'
             }
         }
 
         stage('Build image Docker') {
             steps {
                 echo "Construction de l'image Docker : ${IMAGE_NAME}:${IMAGE_TAG}"
-                // Ici on sort du conteneur Maven pour appeler le démon Docker de la machine hôte
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
             }
