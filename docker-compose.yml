@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    image: imenfatnassi/mini_projet_devops:latest
+    container_name: mini_projet_app
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
